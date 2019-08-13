@@ -68,3 +68,35 @@ func Test_Values(t *testing.T) {
 		}
 	}
 }
+
+// TestOOB ensures that the bitvector will panic if we give it bad
+// inputs that go outside the proper size.
+func Test_OOB(t *testing.T) {
+	v := MakeVector(100)
+
+	negativeSizePanics := willPanic(func() { MakeVector(-1) })
+	negativeValuePanics := willPanic(func() { v.Add(-1) })
+	beyondSizePanics := willPanic(func() { v.Add(1000) })
+
+	if !negativeSizePanics {
+		t.Error("Failed to panic when creating with negative size")
+	}
+	if !negativeValuePanics {
+		t.Error("Failed to panic when adding a negative value")
+	}
+	if !beyondSizePanics {
+		t.Error("Failed to panic when adding beyond size of vector")
+	}
+}
+
+// willPanic runs the provided function f and returns whether it
+// panics or not.
+func willPanic(f func()) (panicked bool) {
+	defer func() {
+		if r := recover(); r != nil {
+			panicked = true
+		}
+	}()
+	f()
+	return panicked
+}
