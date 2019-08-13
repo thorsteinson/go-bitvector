@@ -4,18 +4,18 @@ const wordSize = 64
 
 type Bitvec struct {
 	words   []uint64
-	maxSize uint64
+	capacity uint64
 	size    int
 }
 
-func New(size int) *Bitvec {
-	if size < 0 {
-		panic("Negative size provided for Bitvec conctruction")
+func New(capacity int) *Bitvec {
+	if capacity < 0 {
+		panic("Negative capacity provided for Bitvec conctruction")
 	}
-	num_words := uint64(size)/wordSize + 1
+	num_words := uint64(capacity)/wordSize + 1
 	words := make([]uint64, num_words)
 
-	bv := Bitvec{words: words, maxSize: uint64(size)}
+	bv := Bitvec{words: words, capacity: uint64(capacity)}
 	return &bv
 }
 
@@ -79,11 +79,11 @@ func index(n int) (uint64, uint64) {
 
 func checkOOB(bv *Bitvec, n int) {
 	m := uint64(n)
-	if m >= (*bv).maxSize || m < 0 {
+	if m >= (*bv).capacity || m < 0 {
 		panic("Out of index error")
 	}
 }
 
-func (bv *Bitvec) Capacity() int { return int((*bv).maxSize) }
+func (bv *Bitvec) Capacity() int { return int((*bv).capacity) }
 
 func (bv *Bitvec) Size() int { return (*bv).size }

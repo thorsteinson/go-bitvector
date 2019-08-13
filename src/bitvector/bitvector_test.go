@@ -76,18 +76,18 @@ func Test_Values(t *testing.T) {
 func Test_OOB(t *testing.T) {
 	v := New(100)
 
-	negativeSizePanics := willPanic(func() { New(-1) })
+	negativeCapacityPanics := willPanic(func() { New(-1) })
 	negativeValuePanics := willPanic(func() { v.Add(-1) })
-	beyondSizePanics := willPanic(func() { v.Add(1000) })
+	beyondCapacityPanics := willPanic(func() { v.Add(1000) })
 
-	if !negativeSizePanics {
+	if !negativeCapacityPanics {
 		t.Error("Failed to panic when creating with negative size")
 	}
 	if !negativeValuePanics {
 		t.Error("Failed to panic when adding a negative value")
 	}
-	if !beyondSizePanics {
-		t.Error("Failed to panic when adding beyond size of vector")
+	if !beyondCapacityPanics {
+		t.Error("Failed to panic when adding beyond capacity of vector")
 	}
 }
 
@@ -108,7 +108,7 @@ func willPanic(f func()) (panicked bool) {
 // in a proper state.
 func TestComprehensive(t *testing.T) {
 	const trials = 1000
-	const maxSize = 500
+	const maxCapacity = 500
 
 	seed := time.Now().UnixNano()
 
@@ -116,14 +116,14 @@ func TestComprehensive(t *testing.T) {
 	rand.Seed(seed)
 
 	for i := 0; i < trials; i++ {
-		size := rand.Intn(maxSize)
-		v := New(size)
+		capacity := rand.Intn(maxCapacity)
+		v := New(capacity)
 
-		// Populate a slice random values that's half the size of the
-		// selected size for the given trial
-		sample := make([]int, size/2)
+		// Populate a slice random values that's half the capacity of the
+		// selected capacity for the given trial
+		sample := make([]int, capacity/2)
 		for i := range sample {
-			sample[i] = rand.Intn(size)
+			sample[i] = rand.Intn(capacity)
 		}
 
 		for _, n := range sample {
