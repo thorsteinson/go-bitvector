@@ -45,24 +45,26 @@ func TestRemove(t *testing.T) {
 }
 
 func Test_Values(t *testing.T) {
-	bv := MakeVector(10)
+	v := MakeVector(1000)
 
-	bv.Add(1)
-	bv.Add(2)
-	bv.Add(3)
+	var tests = []int{0, 1, 2, 3, 4, 5, 6, 63, 64, 65, 127, 128, 129}
 
-	resultSlice := []int{1, 2, 3}
-
-	equal := true
-
-	for i, x := range bv.Values() {
-		if x != resultSlice[i] {
-			equal = false
-			break
-		}
+	for _, n := range tests {
+		v.Add(n)
 	}
 
-	if !equal {
-		t.Errorf("Values doesn't have proper slice")
+	vals := v.Values()
+	if len(vals) != len(tests) {
+		t.Error("Value slice length differs from test length")
+		t.Errorf("Expected value: %q", len(tests))
+		t.Errorf("Found value: %q", len(vals))
+	}
+
+	for i, n := range vals {
+		if n != tests[i] {
+			t.Error("Unexpected value found while comparing values")
+			t.Errorf("Expected value: %q", tests[i])
+			t.Errorf("Found value: %q", n)
+		}
 	}
 }
