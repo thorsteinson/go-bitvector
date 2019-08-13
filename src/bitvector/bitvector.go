@@ -43,20 +43,21 @@ func (bv *bitvec) Values() (vals []int) {
 	var acc int
 
 	for _, word := range bv.words {
-		// Do a check here, if the word has a value of zero, that
-		// means every bit is zero, and we can skip this entire
-		// word. This can save us from a bunch of comparisons in a
-		// more sparsely populated set.
-		var bitIdx uint64
-		for bitIdx = 0; bitIdx < wordSize; bitIdx++ {
-			// Create a bitstring to test if the given bit is marked
-			var bitstring uint64
-			bitstring = 1 << bitIdx
-			if word&bitstring > 0 {
-				vals = append(vals, acc)
-			}
+		// We can skip the entire word if no bits are set
+		if word == 0 {
+			acc += wordSize
+		} else {
+			var bitIdx uint64
+			for bitIdx = 0; bitIdx < wordSize; bitIdx++ {
+				// Create a bitstring to test if the given bit is marked
+				var bitstring uint64
+				bitstring = 1 << bitIdx
+				if word&bitstring > 0 {
+					vals = append(vals, acc)
+				}
 
-			acc++
+				acc++
+			}
 		}
 	}
 
