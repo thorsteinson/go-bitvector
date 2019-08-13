@@ -1,7 +1,9 @@
 package bitvector
 
 import (
+	"math/rand"
 	"testing"
+	"time"
 )
 
 const maxTestingSize = 10000
@@ -99,4 +101,52 @@ func willPanic(f func()) (panicked bool) {
 	}()
 	f()
 	return panicked
+}
+
+// TestComprehensive uses randomized trials to ensure that any
+// combination of adding and removing elements leaves the bit vector
+// in a proper state.
+func TestComprehensive(t *testing.T) {
+	const trials = 1000
+	const maxSize = 500
+
+	seed := time.Now().UnixNano()
+
+	t.Logf("Setting seed as: %d", seed)
+	rand.Seed(seed)
+
+	for i := 0; i < trials; i++ {
+		size := rand.Intn(maxSize)
+		v := MakeVector(size)
+
+		// Populate a slice random values that's half the size of the
+		// selected size for the given trial
+		sample := make([]int, size/2)
+		for i := range sample {
+			sample[i] = rand.Intn(size)
+		}
+
+		for _, n := range sample {
+			v.Add(n)
+		}
+
+		// Ensure that every value from our sample was successfully
+		// added
+		for _, n := range sample {
+			if !v.Contains(n) {
+				t.Errorf("Missing added value: %d", n)
+			}
+		}
+
+		for _, n := range sample {
+			v.Remove(n)
+		}
+
+		// Ensure that every value was sucessfully removed
+		for _, n := range sample {
+			if v.Contains(n) {
+				t.Errorf("Spurious value remaining: %d", n)
+			}
+		}
+	}
 }
