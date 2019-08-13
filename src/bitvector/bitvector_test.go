@@ -26,13 +26,21 @@ func Test_Add(t *testing.T) {
 }
 
 func TestRemove(t *testing.T) {
-	bv := MakeVector(10)
+	v := MakeVector(1000)
 
-	bv.Add(5)
-	bv.Remove(5)
+	var tests = []int{0, 1, 2, 3, 4, 5, 6, 63, 64, 65, 127, 128, 129}
 
-	if bv.Contains(5) {
-		t.Errorf("Failed to remove 5")
+	for _, n := range tests {
+		v.Add(n)
+		v.Remove(n)
+		if v.Contains(n) {
+			t.Errorf("Failed to remove value %q", n)
+		}
+
+		v.Remove(n)
+		if v.Contains(n) {
+			t.Errorf("Failed idempotence test removing %q", n)
+		}
 	}
 }
 
