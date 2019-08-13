@@ -14,10 +14,10 @@ func TestAdd(t *testing.T) {
 	rand.Seed(seed)
 
 	testSize := rand.Intn(maxTestingSize)
-	bv := MakeVector(uint64(testSize))
+	bv := MakeVector(testSize)
 
 	for i := 0; i < testingRounds; i++ {
-		n := uint64(rand.Intn(testSize))
+		n := rand.Intn(testSize)
 		bv.Add(n)
 		if !bv.Contains(n) {
 			t.Errorf("Value %q was not found after adding", n)
@@ -52,7 +52,7 @@ func Test_Values (t *testing.T) {
 	bv.Add(2)
 	bv.Add(3)
 
-	resultSlice := []uint64{1,2,3}
+	resultSlice := []int{1,2,3}
 
 	equal := true
 

@@ -7,30 +7,33 @@ type bitvec struct {
 	maxSize uint64
 }
 
-func MakeVector(size uint64) *bitvec {
-	num_words := size/wordSize + 1
+func MakeVector(size int) *bitvec {
+	if size < 0 {
+		panic("Negative size provided for Bitvec conctruction")
+	}
+	num_words := uint64(size)/wordSize + 1
 	words := make([]uint64, num_words)
 
-	bv := bitvec{words: words, maxSize: size}
+	bv := bitvec{words: words, maxSize: uint64(size)}
 	return &bv
 }
 
-func (bv *bitvec) Add(n uint64) {
+func (bv *bitvec) Add(n int) {
 	checkOOB(bv, n)
 	wordIdx, innerIdx := index(n)
 	(*bv).words[wordIdx] |= 1 << innerIdx
 }
 
-func (bv *bitvec) Remove(n uint64) {
+func (bv *bitvec) Remove(n int) {
 	checkOOB(bv, n)
 	wordIdx, innerIdx := index(n)
 	(*bv).words[wordIdx] &= ^(1 << innerIdx)
 }
 
-func (bv *bitvec) Values() (vals []uint64) {
-	vals = []uint64{}
+func (bv *bitvec) Values() (vals []int) {
+	vals = []int{}
 
-	var acc uint64
+	var acc int
 
 	for _, word := range bv.words {
 		// Do a check here, if the word has a value of zero, that
@@ -53,20 +56,22 @@ func (bv *bitvec) Values() (vals []uint64) {
 	return vals
 }
 
-func (bv *bitvec) Contains(n uint64) bool {
+func (bv *bitvec) Contains(n int) bool {
 	checkOOB(bv, n)
 	wordIdx, innerIdx := index(n)
 	return (1 << innerIdx) & (*bv).words[wordIdx] > 0
 }
 
-func index(n uint64) (uint64, uint64) {
-	wordIdx := n / wordSize
-	innerIdx := n % wordSize
+func index(n int) (uint64, uint64) {
+	m := uint64(n)
+	wordIdx := m / wordSize
+	innerIdx := m % wordSize
 	return wordIdx, innerIdx
 }
 
-func checkOOB(bv *bitvec, n uint64) {
-	if n >= (*bv).maxSize {
+func checkOOB(bv *bitvec, n int) {
+	m := uint64(n)
+	if m >= (*bv).maxSize || m < 0 {
 		panic("Out of index error")
 	}
 }
