@@ -8,7 +8,7 @@ type bitvec struct {
 	size    int
 }
 
-func MakeVector(size int) *bitvec {
+func New(size int) *bitvec {
 	if size < 0 {
 		panic("Negative size provided for Bitvec conctruction")
 	}

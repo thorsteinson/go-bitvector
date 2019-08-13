@@ -10,7 +10,7 @@ const maxTestingSize = 10000
 const testingRounds = 100
 
 func Test_Add(t *testing.T) {
-	v := MakeVector(1000)
+	v := New(1000)
 
 	var tests = []int{0, 1, 2, 3, 4, 5, 6, 63, 64, 65, 127, 128, 129}
 
@@ -28,7 +28,7 @@ func Test_Add(t *testing.T) {
 }
 
 func TestRemove(t *testing.T) {
-	v := MakeVector(1000)
+	v := New(1000)
 
 	var tests = []int{0, 1, 2, 3, 4, 5, 6, 63, 64, 65, 127, 128, 129}
 
@@ -47,7 +47,7 @@ func TestRemove(t *testing.T) {
 }
 
 func Test_Values(t *testing.T) {
-	v := MakeVector(1000)
+	v := New(1000)
 
 	var tests = []int{0, 1, 2, 3, 4, 5, 6, 63, 64, 65, 127, 128, 129}
 
@@ -74,9 +74,9 @@ func Test_Values(t *testing.T) {
 // TestOOB ensures that the bitvector will panic if we give it bad
 // inputs that go outside the proper size.
 func Test_OOB(t *testing.T) {
-	v := MakeVector(100)
+	v := New(100)
 
-	negativeSizePanics := willPanic(func() { MakeVector(-1) })
+	negativeSizePanics := willPanic(func() { New(-1) })
 	negativeValuePanics := willPanic(func() { v.Add(-1) })
 	beyondSizePanics := willPanic(func() { v.Add(1000) })
 
@@ -117,7 +117,7 @@ func TestComprehensive(t *testing.T) {
 
 	for i := 0; i < trials; i++ {
 		size := rand.Intn(maxSize)
-		v := MakeVector(size)
+		v := New(size)
 
 		// Populate a slice random values that's half the size of the
 		// selected size for the given trial
@@ -155,7 +155,7 @@ func TestCapacity(t *testing.T) {
 	caps := []int{1, 20, 64, 128, 300, 400, 500, 10000}
 
 	for cap := range caps {
-		v := MakeVector(cap)
+		v := New(cap)
 		if v.Capacity() != cap {
 			t.Errorf("Incorrect size. Expected %d => found %d", cap, v.Capacity())
 		}
@@ -163,7 +163,7 @@ func TestCapacity(t *testing.T) {
 }
 
 func TestSize(t *testing.T) {
-	v := MakeVector(100)
+	v := New(100)
 	sample := []int{1, 2, 3, 4, 5, 63, 64, 65}
 
 	expectedSize := 0
