@@ -161,3 +161,25 @@ func TestCapacity(t *testing.T) {
 		}
 	}
 }
+
+func TestSize(t *testing.T) {
+	v := MakeVector(100)
+	sample := []int{1, 2, 3, 4, 5, 63, 64, 65}
+
+	expectedSize := 0
+	for n := range sample {
+		v.Add(n)
+		expectedSize++
+		if v.Size() != expectedSize {
+			t.Errorf("Size difference during adding. Expected %d => Found %d", expectedSize, v.Size())
+		}
+	}
+
+	for n := range sample {
+		v.Remove(n)
+		expectedSize--
+		if v.Size() != expectedSize {
+			t.Errorf("Size difference during adding. Expected %d => Found %d", expectedSize, v.Size())
+		}
+	}
+}

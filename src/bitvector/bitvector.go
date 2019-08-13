@@ -5,6 +5,7 @@ const wordSize = 64
 type bitvec struct {
 	words   []uint64
 	maxSize uint64
+	size    int
 }
 
 func MakeVector(size int) *bitvec {
@@ -20,14 +21,20 @@ func MakeVector(size int) *bitvec {
 
 func (bv *bitvec) Add(n int) {
 	checkOOB(bv, n)
-	wordIdx, innerIdx := index(n)
-	(*bv).words[wordIdx] |= 1 << innerIdx
+	if !(*bv).Contains(n) {
+		wordIdx, innerIdx := index(n)
+		(*bv).words[wordIdx] |= 1 << innerIdx
+		(*bv).size++
+	}
 }
 
 func (bv *bitvec) Remove(n int) {
 	checkOOB(bv, n)
-	wordIdx, innerIdx := index(n)
-	(*bv).words[wordIdx] &= ^(1 << innerIdx)
+	if (*bv).Contains(n) {
+		wordIdx, innerIdx := index(n)
+		(*bv).words[wordIdx] &= ^(1 << innerIdx)
+		(*bv).size--
+	}
 }
 
 func (bv *bitvec) Values() (vals []int) {
@@ -77,3 +84,5 @@ func checkOOB(bv *bitvec, n int) {
 }
 
 func (bv *bitvec) Capacity() int { return int((*bv).maxSize) }
+
+func (bv *bitvec) Size() int { return (*bv).size }
