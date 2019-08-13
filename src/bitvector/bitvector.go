@@ -2,24 +2,24 @@ package bitvector
 
 const wordSize = 64
 
-type bitvec struct {
+type Bitvec struct {
 	words   []uint64
 	maxSize uint64
 	size    int
 }
 
-func New(size int) *bitvec {
+func New(size int) *Bitvec {
 	if size < 0 {
 		panic("Negative size provided for Bitvec conctruction")
 	}
 	num_words := uint64(size)/wordSize + 1
 	words := make([]uint64, num_words)
 
-	bv := bitvec{words: words, maxSize: uint64(size)}
+	bv := Bitvec{words: words, maxSize: uint64(size)}
 	return &bv
 }
 
-func (bv *bitvec) Add(n int) {
+func (bv *Bitvec) Add(n int) {
 	checkOOB(bv, n)
 	if !(*bv).Contains(n) {
 		wordIdx, innerIdx := index(n)
@@ -28,7 +28,7 @@ func (bv *bitvec) Add(n int) {
 	}
 }
 
-func (bv *bitvec) Remove(n int) {
+func (bv *Bitvec) Remove(n int) {
 	checkOOB(bv, n)
 	if (*bv).Contains(n) {
 		wordIdx, innerIdx := index(n)
@@ -37,7 +37,7 @@ func (bv *bitvec) Remove(n int) {
 	}
 }
 
-func (bv *bitvec) Values() (vals []int) {
+func (bv *Bitvec) Values() (vals []int) {
 	vals = []int{}
 
 	var acc int
@@ -64,7 +64,7 @@ func (bv *bitvec) Values() (vals []int) {
 	return vals
 }
 
-func (bv *bitvec) Contains(n int) bool {
+func (bv *Bitvec) Contains(n int) bool {
 	checkOOB(bv, n)
 	wordIdx, innerIdx := index(n)
 	return (1<<innerIdx)&(*bv).words[wordIdx] > 0
@@ -77,13 +77,13 @@ func index(n int) (uint64, uint64) {
 	return wordIdx, innerIdx
 }
 
-func checkOOB(bv *bitvec, n int) {
+func checkOOB(bv *Bitvec, n int) {
 	m := uint64(n)
 	if m >= (*bv).maxSize || m < 0 {
 		panic("Out of index error")
 	}
 }
 
-func (bv *bitvec) Capacity() int { return int((*bv).maxSize) }
+func (bv *Bitvec) Capacity() int { return int((*bv).maxSize) }
 
-func (bv *bitvec) Size() int { return (*bv).size }
+func (bv *Bitvec) Size() int { return (*bv).size }
