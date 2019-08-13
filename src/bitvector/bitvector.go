@@ -59,7 +59,7 @@ func (bv *bitvec) Values() (vals []int) {
 func (bv *bitvec) Contains(n int) bool {
 	checkOOB(bv, n)
 	wordIdx, innerIdx := index(n)
-	return (1 << innerIdx) & (*bv).words[wordIdx] > 0
+	return (1<<innerIdx)&(*bv).words[wordIdx] > 0
 }
 
 func index(n int) (uint64, uint64) {
@@ -75,3 +75,5 @@ func checkOOB(bv *bitvec, n int) {
 		panic("Out of index error")
 	}
 }
+
+func (bv *bitvec) Capacity() int { return int((*bv).maxSize) }

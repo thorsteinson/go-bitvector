@@ -150,3 +150,14 @@ func TestComprehensive(t *testing.T) {
 		}
 	}
 }
+
+func TestCapacity(t *testing.T) {
+	caps := []int{1, 20, 64, 128, 300, 400, 500, 10000}
+
+	for cap := range caps {
+		v := MakeVector(cap)
+		if v.Capacity() != cap {
+			t.Errorf("Incorrect size. Expected %d => found %d", cap, v.Capacity())
+		}
+	}
+}
