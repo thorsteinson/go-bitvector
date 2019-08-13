@@ -1,9 +1,7 @@
 package bitvector
 
 import (
-	"math/rand"
 	"testing"
-	"time"
 )
 
 const maxTestingSize = 10000
@@ -23,23 +21,6 @@ func Test_Add(t *testing.T) {
 		v.Add(n)
 		if !v.Contains(n) {
 			t.Errorf("Failed idempotence test adding %q", n)
-		}
-	}
-}
-
-func TestAdd(t *testing.T) {
-	seed := time.Now().UnixNano()
-	rand.Seed(seed)
-
-	testSize := rand.Intn(maxTestingSize)
-	bv := MakeVector(testSize)
-
-	for i := 0; i < testingRounds; i++ {
-		n := rand.Intn(testSize)
-		bv.Add(n)
-		if !bv.Contains(n) {
-			t.Errorf("Value %q was not found after adding", n)
-			t.Logf("Failed with seed: %q", seed)
 		}
 	}
 }
