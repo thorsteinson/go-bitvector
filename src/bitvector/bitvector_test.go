@@ -248,3 +248,46 @@ func Test_UnionWith(t *testing.T) {
 	}
 
 }
+
+func TestUnion(t *testing.T) {
+	v1 := New(100)
+	v2 := New(100)
+
+	sample1 := []int{1, 2, 3, 4, 63, 64}
+	sample2 := []int{65, 67, 88, 90}
+	expectedVals := make([]int, len(sample1)+len(sample2))
+	copy(expectedVals, sample1)
+	copy(expectedVals[len(sample1):], sample2)
+
+	for _, n := range sample1 {
+		v1.Add(n)
+	}
+
+	for _, n := range sample2 {
+		v2.Add(n)
+	}
+
+
+	v3 := Union(v1, v2)
+
+	// Checks that all of the elements from both bit vectors are
+	// accounted for
+	for i, val := range v3.Values() {
+		if val != expectedVals[i] {
+			t.Errorf("Unexpected value. Expected %d, Found %d", expectedVals[i], val)
+		}
+	}
+	t.Logf("Values(): %v", v3.Values())
+	t.Logf("Expected Values(): %v", expectedVals)
+
+	// Checks for panic when union attempted with different capacities
+	differingCapacitiesPanics := willPanic(func() {
+		v1 := New(10)
+		v2 := New(15)
+		Union(v1, v2)
+	})
+
+	if !differingCapacitiesPanics {
+		t.Error("Union failed to panic when capacities differ")
+	}
+}

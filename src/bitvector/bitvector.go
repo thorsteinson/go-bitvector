@@ -89,10 +89,23 @@ func (bv *Bitvec) Capacity() int { return int((*bv).capacity) }
 func (bv *Bitvec) Size() int { return (*bv).size }
 
 func (v1 *Bitvec) UnionWith(v2 *Bitvec) {
-	if v1.Capacity() != v2.Capacity() {
-		panic("Cannot union vectors of different capacity")
-	}
+	capacityCheck(v1, v2)
 	for i, word := range v2.words {
 		v1.words[i] |= word
+	}
+}
+
+func Union (v1 *Bitvec, v2 *Bitvec) *Bitvec {
+	capacityCheck(v1, v2)
+	v3 := New(v1.Capacity())
+	for i, word := range v2.words {
+		v3.words[i] = v1.words[i] | word
+	}
+	return v3
+}
+
+func capacityCheck(v1 *Bitvec, v2 *Bitvec) {
+	if v1.Capacity() != v2.Capacity() {
+		panic("Cannot union vectors of different capacity")
 	}
 }
