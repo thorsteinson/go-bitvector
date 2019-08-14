@@ -183,3 +183,56 @@ func TestSize(t *testing.T) {
 		}
 	}
 }
+
+// CopyVec is a helper function that makes a copy of a vector, for
+// testing and comparison later on.
+func copyVec(v *Bitvec) *Bitvec {
+	vCopy := New(v.Capacity())
+	copy(vCopy.words, v.words)
+	vCopy.capacity = v.capacity
+	vCopy.size = v.size
+	return vCopy
+}
+
+func Test_UnionWith(t *testing.T) {
+	v1 := New(100)
+	v2 := New(100)
+
+	sample1 := []int{1, 2, 3, 4, 63, 64}
+	sample2 := []int{65, 67, 88, 90}
+	expectedVals := make([]int, len(sample1)+len(sample2))
+	copy(expectedVals, sample1)
+	copy(expectedVals[len(sample1):], sample2)
+
+	for _, n := range sample1 {
+		v1.Add(n)
+	}
+
+	for _, n := range sample2 {
+		v2.Add(n)
+	}
+	v2Copy := copyVec(v2)
+
+	t.Logf("v1.Values(): %v", v1.Values())
+	t.Logf("v2.Values(): %v", v2.Values())
+
+	v1.UnionWith(v2)
+
+	// Checks that all of the elements from both bit vectors are
+	// accounted for
+	for i, val := range v1.Values() {
+		if val != expectedVals[i] {
+			t.Errorf("Unexpected value. Expected %d, Found %d", expectedVals[i], val)
+		}
+	}
+	t.Logf("Values(): %v", v1.Values())
+	t.Logf("Expected Values(): %v", expectedVals)
+
+	// Checks that v2 has not been modified by the operation
+	copiedVals := v2Copy.Values()
+	for i, val := range v2.Values() {
+		if val != copiedVals[i] {
+			t.Errorf("Unexpected mutation in parameter vector. Expected value %d, Found %d", copiedVals[i], val)
+		}
+	}
+}

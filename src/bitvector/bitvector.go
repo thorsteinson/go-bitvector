@@ -3,9 +3,9 @@ package bitvector
 const wordSize = 64
 
 type Bitvec struct {
-	words   []uint64
+	words    []uint64
 	capacity uint64
-	size    int
+	size     int
 }
 
 func New(capacity int) *Bitvec {
@@ -87,3 +87,9 @@ func checkOOB(bv *Bitvec, n int) {
 func (bv *Bitvec) Capacity() int { return int((*bv).capacity) }
 
 func (bv *Bitvec) Size() int { return (*bv).size }
+
+func (v1 *Bitvec) UnionWith(v2 *Bitvec) {
+	for i, word := range v2.words {
+		v1.words[i] |= word
+	}
+}
