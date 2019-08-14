@@ -235,4 +235,16 @@ func Test_UnionWith(t *testing.T) {
 			t.Errorf("Unexpected mutation in parameter vector. Expected value %d, Found %d", copiedVals[i], val)
 		}
 	}
+
+	// Checks for panic when union attempted with different capacities
+	differingCapacitiesPanics := willPanic(func() {
+		v1 := New(10)
+		v2 := New(15)
+		v1.UnionWith(v2)
+	})
+
+	if !differingCapacitiesPanics {
+		t.Error("Union failed to panic when capacities differ")
+	}
+
 }
