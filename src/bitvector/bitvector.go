@@ -93,14 +93,16 @@ func (v1 *Bitvec) UnionWith(v2 *Bitvec) {
 	for i, word := range v2.words {
 		v1.words[i] |= word
 	}
+	resetSize(v1)
 }
 
-func Union (v1 *Bitvec, v2 *Bitvec) *Bitvec {
+func Union(v1 *Bitvec, v2 *Bitvec) *Bitvec {
 	capacityCheck(v1, v2)
 	v3 := New(v1.Capacity())
 	for i, word := range v2.words {
 		v3.words[i] = v1.words[i] | word
 	}
+	resetSize(v3)
 	return v3
 }
 
@@ -108,4 +110,28 @@ func capacityCheck(v1 *Bitvec, v2 *Bitvec) {
 	if v1.Capacity() != v2.Capacity() {
 		panic("Cannot union vectors of different capacity")
 	}
+}
+
+func countBits(word uint64) (bits int) {
+	if word == 0 {
+		return 0
+	}
+	var mask uint64 = 1
+	for i := 0; i < wordSize; i++ {
+		if mask&word >= 1 {
+			bits++
+		}
+		mask = mask << 1
+	}
+	return
+}
+
+// resetSize will rewrite the size field of a bitvector, by literally
+// counting each bit as part of the size field
+func resetSize(v *Bitvec) {
+	total := 0
+	for _, word := range v.words {
+		total += countBits(word)
+	}
+	v.size = total
 }

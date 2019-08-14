@@ -247,6 +247,12 @@ func Test_UnionWith(t *testing.T) {
 		t.Error("Union failed to panic when capacities differ")
 	}
 
+	// Checks that the size of the union is what we would expect
+	expectedSize := len(sample1) + len(sample2)
+	if v1.Size() != expectedSize {
+		t.Errorf("Incorrect Size. Expected %d => Found %d", expectedSize, v1.Size())
+	}
+
 }
 
 func TestUnion(t *testing.T) {
@@ -266,7 +272,6 @@ func TestUnion(t *testing.T) {
 	for _, n := range sample2 {
 		v2.Add(n)
 	}
-
 
 	v3 := Union(v1, v2)
 
@@ -289,5 +294,11 @@ func TestUnion(t *testing.T) {
 
 	if !differingCapacitiesPanics {
 		t.Error("Union failed to panic when capacities differ")
+	}
+
+	// Checks that the size of the union is what we would expect
+	expectedSize := len(sample1) + len(sample2)
+	if v3.Size() != expectedSize {
+		t.Errorf("Incorrect Size. Expected %d => Found %d", expectedSize, v3.Size())
 	}
 }
